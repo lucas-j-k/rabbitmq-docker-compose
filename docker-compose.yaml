@@ -1,0 +1,66 @@
+version: '3.7'
+services:
+  api:
+    build: ./api
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+    environment:
+      PORT: '3000'
+      RABBIT_SERVICE: 'rabbitmq'
+      RABBIT_QUEUE: 'webhook-trigger'
+      DB_HOST: 'database'
+      DB_PORT: '3306'
+      DB_USER: 'service-user'
+      DB_PASSWORD: 'password'
+      DB_DATABASE: 'Webhooks'
+    links:
+      - rabbitmq
+      - database
+  worker:
+    build: ./worker
+    environment:
+      RABBIT_SERVICE: 'rabbitmq'
+      RABBIT_QUEUE: 'webhook-trigger'
+    links:
+      - rabbitmq
+  rabbitmq:
+    image:  rabbitmq:management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  database:
+    image: mysql:5.7
+    ports:
+      - "3306:3306"
+    expose:
+      - "3306"
+    environment: 
+      MYSQL_DATABASE: Webhooks
+      MYSQL_USER: 'service-user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+  db-setup:
+    build: ./db-setup
+    depends_on:
+      - database
+    environment:
+      DB_HOST: 'database'
+      DB_PORT: '3306'
+      DB_USER: 'service-user'
+      DB_PASSWORD: 'password'
+      DB_DATABASE: 'Webhooks'
+  phpmyadmin:
+      image: phpmyadmin:latest
+      ports:
+        - 8080:80
+      restart: unless-stopped
+      links:
+      - database
+      depends_on:
+        - database
+      environment:
+        PMA_HOST: database
+        PMA_PORT: 3306
+        PMA_ARBITRARY: 1
