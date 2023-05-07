@@ -18,6 +18,9 @@ const delay = async (ms: number) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+/**
+ * Connect to rabbit
+ */
 const connect = async () => {
   for (let i = 1; i <= connectTriesLimit; i += 1) {
     try {

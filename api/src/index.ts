@@ -75,6 +75,9 @@ app.get("/status", async (_: Request, res: Response) => {
 
 app.get("/", async (req: Request, res: Response) => {
   try {
+    if (!req.query.event) {
+      return res.status(400).json({ error: "invalid event type" });
+    }
     const event = req.query.event as string;
     const valid = await validateIncomingEventType(database, event.toUpperCase());
     if (!valid) {
