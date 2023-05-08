@@ -85,7 +85,6 @@ app.get("/", async (req: Request, res: Response) => {
     }
     const hooks = await listHooks(database, event.toUpperCase());
     const channel = await connection.createChannel();
-    console.log(typeof hooks, typeof channel);
     for (const hook of hooks) {
       console.log("Sending request - ", hook);
       const message = {

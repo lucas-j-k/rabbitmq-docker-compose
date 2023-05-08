@@ -1,0 +1,43 @@
+# https://taskfile.dev
+
+version: '3'
+
+dotenv: [".env"]
+
+tasks:
+
+  # Migrations
+    newmigration:
+        desc: Create a new migration file. Example - task newmigration -- add_new_cols
+        cmds:
+        - goose -dir database/migrations create {{.CLI_ARGS}} sql
+    newseed:
+        desc: Create a new seed file. Example - task newseed -- add_dummy_rows
+        cmds:
+        - goose -dir database/seeds create {{.CLI_ARGS}} sql
+    migrate:
+        desc: Run all migration files (up)
+        cmds:
+        - goose -dir database/migrations -table _migrations mysql "$MYSQL_USER:$MYSQL_PASSWORD@tcp(localhost:3306)/Webhooks?parseTime=True" up
+    seed:
+        desc: Run all seed files (up)
+        cmds:
+        - echo "$MYSQL_USER $MYSQL_PASSWORD"
+        - goose -dir database/seeds -table _seeds mysql "$MYSQL_USER:$MYSQL_PASSWORD@tcp(localhost:3306)/Webhooks?parseTime=True" up
+    sqlcli:
+        desc: Enter MYSQL CLI in running DB container
+        cmds:
+        - docker exec -it webhook_database mysql -p
+    sqlcli:
+        desc: Enter MYSQL CLI in running DB container
+        cmds:
+        - docker exec -it webhook_database mysql -p
+    
+    # App
+    up:
+      desc: Start app using Tilt
+      cmds:
+      - tilt up
+
+    
+
