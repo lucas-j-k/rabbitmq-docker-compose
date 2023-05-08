@@ -42,13 +42,3 @@ services:
       MYSQL_USER: 'service-user'
       MYSQL_PASSWORD: 'password'
       MYSQL_ROOT_PASSWORD: 'password'
-  # db-setup:
-  #   build: ./db-setup
-  #   depends_on:
-  #     - database
-  #   environment:
-  #     DB_HOST: 'database'
-  #     DB_PORT: '3306'
-  #     DB_USER: 'service-user'
-  #     DB_PASSWORD: 'password'
-  #     DB_DATABASE: 'Webhooks'
